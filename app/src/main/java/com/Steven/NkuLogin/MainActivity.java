@@ -128,7 +128,7 @@ public class MainActivity extends BaseActivity {
 			public void onClick(View v){
 				PutPassWord = EdText_password.getText().toString();
 				if(PutPassWord.length()<100) {
-					webView1.loadUrl("javascript:StevenSecurity('" + PutPassWord + "')");
+					//webView1.loadUrl("javascript:StevenSecurity('" + PutPassWord + "')");
 				}
 				new Thread(){
 					public void run(){
