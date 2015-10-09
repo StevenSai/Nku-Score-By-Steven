@@ -121,8 +121,6 @@ public class MainActivity extends BaseActivity {
 		} );
 		Button bn_getScore=(Button)findViewById(R.id.button_getScore);
 		Button bn_evaluate=(Button)findViewById(R.id.button_evaluateTeacher);
-
-
 		bn_getScore.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v){
