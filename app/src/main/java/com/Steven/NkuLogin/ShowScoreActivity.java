@@ -13,7 +13,7 @@ public class ShowScoreActivity extends BaseActivity {
 		WebView tw=(WebView)findViewById(R.id.webView1);
 		Intent intent=getIntent();
 		String res_page=intent.getCharSequenceExtra("res_page").toString();
-		tw.loadDataWithBaseURL("about:blank",res_page, "text/html", "utf-8","");
+		tw.loadDataWithBaseURL("about:blank", res_page, "text/html", "utf-8", "");
 	}
 
 //	@Override
