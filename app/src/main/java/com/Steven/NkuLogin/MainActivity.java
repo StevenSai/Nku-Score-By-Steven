@@ -13,7 +13,6 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
@@ -66,7 +65,7 @@ public class MainActivity extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		//requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		valicodeView=(ImageView)findViewById(R.id.imageView1);
@@ -175,6 +174,8 @@ public class MainActivity extends BaseActivity {
 		});
 	}
 
+
+
 	private class STJ{
 		@JavascriptInterface
 		public void jsMethod(String mi){
@@ -193,7 +194,7 @@ public class MainActivity extends BaseActivity {
 		if(keyCode == KeyEvent.KEYCODE_BACK){
 			AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
 			dialog.setTitle("( ⊙ o ⊙ )！");
-			dialog.setMessage("\n嘿！你确定要走了吗？(●—●) \n");
+			dialog.setMessage("\n嘿！你确定要走了吗？ \n");
 			dialog.setCancelable(true);
 			dialog.setNegativeButton("退出", new DialogInterface.OnClickListener() {
 				@Override

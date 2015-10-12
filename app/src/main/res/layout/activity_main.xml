@@ -24,7 +24,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_weight="1"
-        android:background="@drawable/dialog1"
+        android:background="@drawable/dialog3"
         android:gravity="top|center"
         android:orientation="vertical"
         android:paddingBottom="10dp"

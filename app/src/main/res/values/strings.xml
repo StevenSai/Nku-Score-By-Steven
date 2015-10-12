@@ -5,8 +5,15 @@
     <string name="action_settings">..</string>
     <string name="title_activity_show_score">喏，你要的成绩单 (●—●)</string>
     <string name="title_activity_about">App的故事</string>
-    <string name="abooout">特别感谢：初版作者 Alpha02 大神\n初版源码：\nhttps://github.com/Alpha02/NKUEduSysLogin\n \n\t\t\t小学期时发现教务系统登录采用了新版验证码（包含字母），遂发布2.0版本修正。但经历愉快的暑假后，学校教务系统为了保证大家的密码安全采用了新版加密，App2.0已经无法正常登陆查分。此V2.3.3.3版本（你在逗我）已经加入此加密系统，并进行了一些小细节的优化。\n\n\t\t\t特此希望大家查分愉快，科科必过~~</string>
-    <string name="author">By  NKU电光 Steven.\n\n 2015.10.7\t\t\t\t</string>
+    <string name="abooout">特别感谢：初版作者 Alpha02 大神\n初版源码：\nhttps://github.com/Alpha02/NKUEduSysLogin\n \n\t\t\t小学期时发现教务系统登录采用了新版验证码（包含字母了），遂发布V2.0版本修正。但经历愉快的暑假后，学校教务系统为了保证大家的密码安全采用了新版加密，V2.0也无法正常登陆查分了。此V2.3.3.3版本（严肃脸）已经加入此加密系统，并进行了一些小细节的优化。查分功能应该没问题。评教功能因无测试账号未验证能否成功运行，大家请自行尝试咯，若不行还是要认(he)真(he)评教啊。版权自然还是属于原作者哦（大神表怪我乱改你的App）。\n\n\t\t\t特此希望大家查分愉快，科科必过~~</string>
+    <string name="author">By Steven.\n\n 2015.10.12</string>
     <string name="versionname">当前版本 V2.3.3.3</string>
+
+    <string name="title_activity_welecome">WelecomeActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_welcome">WelcomeActivity</string>
+
+    <string name="hello_world">Hello world!</string>
 
 </resources>

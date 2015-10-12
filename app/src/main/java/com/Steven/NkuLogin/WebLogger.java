@@ -279,8 +279,9 @@ public class WebLogger {
 			GPA_count+="<br></br>";
 			reportStatus("创建HTML...", 40);
 			res_page="";
-			res_page+="<html>"+GPA_alarm;
-			res_page+="<br></br><p align=\"center\" style=\"font-weight:bold\">修课得分详情</p>";
+			res_page+="<html>";
+			res_page+="<p align=\"center\" style=\"font-weight:bold\">修课得分详情</p>";
+			res_page+="<p align=\"center\">（P.S.预警信息见末尾，但愿你没有哦 ^_^）</p>";
 			res_page+=GPA_count;
 			res_page+="<table bgcolor=\"#CCCCCC\" border=\"0\" cellspacing=\"2\" cellpadding=\"3\" width=\"100%\">";
 			res_page+="<tr bgcolor=\"#3366CC\"><td>序号</td><td>课程代码</td><td>课程名称</td><td>课程类型</td><td>成绩</td><td>学分</td><td>重修成绩</td><td>重修情况</td></tr>";
@@ -298,8 +299,9 @@ public class WebLogger {
 				pageContent=readAll(client.execute(get).getEntity().getContent());
 			}
 			deleteValue(headers,"Referer");
+			res_page+="</table>"+"<br></br><p align=\"center\" style=\"font-weight:bold\">得分预警信息</p>";
+			res_page+=GPA_alarm+"</html>";
 			reportStatus("正在将成绩单呈上来...", 100);
-			res_page+="</table></html>";
 			System.out.println(res_page);
 			reportReady();
 
