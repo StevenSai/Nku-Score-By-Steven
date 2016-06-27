@@ -3,6 +3,7 @@ package com.Steven.NkuLogin;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -23,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -95,7 +97,7 @@ public class WebLogger {
 	}
 	public void deleteValue(List<String> headers,String key){
 		if(headers.indexOf(key)!=-1){
-			headers.remove(headers.indexOf(key)+1);
+			headers.remove(headers.indexOf(key) + 1);
 			headers.remove(headers.indexOf(key));
 		}
 	}
@@ -205,7 +207,7 @@ public class WebLogger {
 			HttpClient client = new DefaultHttpClient();
 			HttpPost post=new HttpPost("http://222.30.32.10/stdloginAction.do");
 			setContentLength(0);
-			setHeaders(post,headers2);
+			setHeaders(post, headers2);
 			List<NameValuePair>loginPost
 					=new ArrayList<NameValuePair>(Arrays.asList(
 					new BasicNameValuePair("usercode_text",infos.get(1)),
@@ -281,12 +283,27 @@ public class WebLogger {
 			res_page="";
 			res_page+="<html>";
 			res_page+="<p align=\"center\" style=\"font-weight:bold\">修课得分详情</p>";
-			res_page+="<p align=\"center\">（P.S.预警信息见末尾，但愿你没有哦 ^_^）</p>";
+			pattern=Pattern.compile("姓名：\\w*");
+			matcher=pattern.matcher(pageContent);
+			if(matcher.find()){
+				res_page+="<p align=\"center\">";
+				res_page=res_page+matcher.group(0)+"         ";
+				//res_page+="</p>";
+			}
+			pattern=Pattern.compile("学号：\\d+");
+			matcher=pattern.matcher(pageContent);
+			if(matcher.find()){
+				//res_page+="<p align=\"center\">";
+				res_page+=matcher.group(0);
+				res_page+="</p>";
+			}
+			res_page+="<p align=\"center\">（P.S.表后加入了详细的学分绩统计）</p>";
+			res_page+="<p align=\"center\">（P.P.S.表后还有预警信息）</p>";
 			res_page+=GPA_count;
 			res_page+="<table bgcolor=\"#CCCCCC\" border=\"0\" cellspacing=\"2\" cellpadding=\"3\" width=\"100%\">";
 			res_page+="<tr bgcolor=\"#3366CC\"><td>序号</td><td>课程代码</td><td>课程名称</td><td>课程类型</td><td>成绩</td><td>学分</td><td>重修成绩</td><td>重修情况</td></tr>";
 			int page_index;
-			setValue(headers,"Referer","http://222.30.32.10/xsxk/studiedAction.do");
+			setValue(headers, "Referer", "http://222.30.32.10/xsxk/studiedAction.do");
 			for (page_index=0;page_index<pages_number;page_index++){
 				reportStatus("良辰正在帮你读取第"+page_index+"页", 30);
 				pattern=Pattern.compile("(<tr bgcolor=\"#FFFFFF\">(( *\t\t.*?)+?) *\t</tr>)");
@@ -295,14 +312,16 @@ public class WebLogger {
 					res_page+=matcher.group(0);
 				}
 				get=new HttpGet("http://222.30.32.10/xsxk/studiedPageAction.do?page=next");
-				setHeaders(get,headers);
+				setHeaders(get, headers);
+				//Log.d("zzz", pageContent);
 				pageContent=readAll(client.execute(get).getEntity().getContent());
 			}
+			//Log.i("stevenpage",res_page);
 			deleteValue(headers,"Referer");
-			res_page+="</table>"+"<br></br><p align=\"center\" style=\"font-weight:bold\">得分预警信息</p>";
+			res_page+="</table>";
+			res_page+=total()+"<br></br><p align=\"center\" style=\"font-weight:bold\">得分预警信息</p>";
 			res_page+=GPA_alarm+"</html>";
 			reportStatus("正在将成绩单呈上来...", 100);
-			System.out.println(res_page);
 			reportReady();
 
 		} catch (ClientProtocolException e) {
@@ -315,6 +334,153 @@ public class WebLogger {
 
 		return true;
 	}
+
+	public String total(){
+		double score[][] = new double[100][2]; //ABC
+		double scoreD[][] = new double[100][2]; //D
+		double scoreE[][] = new double[50][2];//E
+		int ABC = 0 , D = 0 , E = 0;
+		int i = 0;
+		for(i=0;i<100;i++){
+			for (int p=0;p<2;p++){
+				score[i][p]=0;
+				scoreD[i][p]=0;
+				if(i<50){
+					scoreE[i][p]=0;
+				}
+			}
+		}
+		i = 0;
+		Pattern pattern;
+		Matcher matcher;
+		pattern=Pattern.compile("<td align=\"center\" class=\"NavText\">[A-C]\\s.*?<td align=\"center\" class=\"NavText\">.*?<td align=\"center\" class=\"NavText\">.*?</td>");
+		matcher=pattern.matcher(res_page);
+		while (matcher.find()){
+			Log.d("test",matcher.group(0));
+			Pattern pattern1 = Pattern.compile("\\d+(\\.\\d+)?");
+			Matcher matcher1 = pattern1.matcher(matcher.group(0));
+			int j = 0;
+			while (matcher1.find()) {
+				Log.d("test1",matcher1.group(0));
+				score[i][j]= Double.parseDouble(matcher1.group(0));
+				j++;
+			}
+			if(j==1){
+				score[i][1]=score[i][0];
+				score[i][0]=-1;
+			}
+			i++;
+		}
+		ABC = i;
+		i = 0;
+		pattern=Pattern.compile("<td align=\"center\" class=\"NavText\">D\\s.*?<td align=\"center\" class=\"NavText\">.*?<td align=\"center\" class=\"NavText\">.*?</td>");
+		matcher=pattern.matcher(res_page);
+		while (matcher.find()){
+			Log.d("test",matcher.group(0));
+			Pattern pattern1 = Pattern.compile("\\d+(\\.\\d+)?");
+			Matcher matcher1 = pattern1.matcher(matcher.group(0));
+			int j = 0;
+			while (matcher1.find()) {
+				Log.d("test1",matcher1.group(0));
+				scoreD[i][j]= Double.parseDouble(matcher1.group(0));
+				j++;
+			}
+			if(j==1){
+				scoreD[i][1]=scoreD[i][0];
+				scoreD[i][0]=-1;
+			}
+			i++;
+		}
+		D = i;
+		i = 0;
+		pattern=Pattern.compile("<td align=\"center\" class=\"NavText\">E\\s.*?<td align=\"center\" class=\"NavText\">.*?<td align=\"center\" class=\"NavText\">.*?</td>");
+		matcher=pattern.matcher(res_page);
+		while (matcher.find()){
+			Log.d("test",matcher.group(0));
+			Pattern pattern1 = Pattern.compile("\\d+(\\.\\d+)?");
+			Matcher matcher1 = pattern1.matcher(matcher.group(0));
+			int j = 0;
+			while (matcher1.find()) {
+				Log.d("test1",matcher1.group(0));
+				scoreE[i][j]= Double.parseDouble(matcher1.group(0));
+				j++;
+			}
+			if(j==1){
+				scoreE[i][1]=scoreE[i][0];
+				scoreE[i][0]=-1;
+			}
+			i++;
+		}
+		E = i;
+
+		double ABCGPA = 0 ,ABCDGPA = 0, ABCDEGPA = 0,ABCGPAF=0,ABCDGPAF = 0,ABCDEGPAF = 0;
+		double ABCTOTAL = 0 , ABCDTOTAL = 0 ,ABCDETOTAL = 0 ,spe = 0;
+		for(i=0;i<ABC;i++){
+			if(score[i][0]>=60&&score[i][1]!=0) {
+				ABCGPA += score[i][0] * score[i][1];
+				ABCTOTAL += score[i][1];
+			}else if(score[i][1]!=0&&score[i][0]!=-1){
+				ABCGPA += 60 * score[i][1];
+				ABCTOTAL+=score[i][1];
+			}else if(score[i][0]==-1){
+				spe+=score[i][1];
+			}
+		}
+		if (ABCTOTAL!=0){
+			ABCGPAF = ABCGPA/ABCTOTAL;
+		}else ABCGPAF = 0;
+
+		ABCDGPA += ABCGPA;
+		ABCDTOTAL += ABCTOTAL;
+		ABCTOTAL += spe;
+
+		for(i=0;i<D;i++){
+			if(scoreD[i][0]>=60&&scoreD[i][1]!=0) {
+				ABCDGPA += scoreD[i][0] * scoreD[i][1];
+				ABCDTOTAL += scoreD[i][1];
+			}else if(scoreD[i][1]!=0&&scoreD[i][0]!=-1){
+				ABCDGPA += 60 * scoreD[i][1];
+				ABCDTOTAL+=scoreD[i][1];
+			}else if(scoreD[i][0]==-1){
+				spe+=scoreD[i][1];
+			}
+		}
+		if (ABCDTOTAL!=0){
+			ABCDGPAF = ABCDGPA/ABCDTOTAL;
+		}else ABCDGPAF = 0;
+
+		ABCDEGPA += ABCDGPA;
+		ABCDETOTAL += ABCDTOTAL;
+		ABCDTOTAL += spe;
+
+		for(i=0;i<E;i++){
+			if(scoreE[i][0]>=60&&scoreE[i][1]!=0) {
+				ABCDEGPA += scoreE[i][0] * scoreE[i][1];
+				ABCDETOTAL += scoreE[i][1];
+			}else if(scoreE[i][1]!=0&&scoreE[i][0]!=-1){
+				ABCDEGPA += 60 * scoreE[i][1];
+				ABCDETOTAL+=scoreE[i][1];
+			}else if(scoreE[i][0]==-1){
+				spe+=scoreE[i][1];
+			}
+		}
+		if (ABCDETOTAL!=0){
+			ABCDEGPAF = ABCDEGPA/ABCDETOTAL;
+		}else ABCDEGPAF = 0;
+		ABCDETOTAL += spe;
+		DecimalFormat df   = new DecimalFormat("######0.0000");
+		String back="<p></p><p align=\"center\" style=\"font-weight:bold\">学分统计</p>";
+		back+="<p align=\"center\">ABC类课：\t"+ABCTOTAL+"学分</p>";
+		back+="<p align=\"center\">ABC类课总学分绩：\t"+df.format(ABCGPAF)+"</p>";
+		back+="<p align=\"center\">ABCD类课：\t"+ABCDTOTAL+"学分</p>";
+		back+="<p align=\"center\">ABCD类课总学分绩：\t"+df.format(ABCDGPAF)+"</p>";
+		back+="<p align=\"center\">ABCDE类课：\t"+ABCDETOTAL+"学分</p>";
+		back+="<p align=\"center\">ABCDE类课总学分绩：\t"+df.format(ABCDEGPAF)+"</p>";
+
+		return back;
+	}
+
+
 	private void startActivity(Intent intent) {
 		// TODO Auto-generated method stub
 
