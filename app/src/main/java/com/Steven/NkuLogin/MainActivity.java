@@ -104,12 +104,12 @@ public class MainActivity extends BaseActivity {
 		}.start();
 
 		boolean isrmb = pref.getBoolean("remenber_password",false);
-		boolean user_first = pref.getBoolean("first",true);
+		boolean user_first = pref.getBoolean("first1",true);
 		if (user_first){
-			pref.edit().putBoolean("first", false).apply();
+			pref.edit().putBoolean("first1", false).apply();
 			AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
-			dialog.setTitle("Excited!!!");
-			dialog.setMessage("\n本次更新，没做什么别的，大概三件事：\n1、加入了记住学号密码功能，终于不用每次都输入了。\n2、换了新图标，感谢“吃掉南开”的设计大神。\n3、改善联网稳定性，长时间“联网”请检查网络，若有网但连不上则说明是教务系统在维护。\n\n还有就是Fix了一些使用上的小Bug，但主要就那三件事。\n很惭愧，做了一点微小的工作，谢谢大家！\n");
+			dialog.setTitle("资瓷!!!");
+			dialog.setMessage("\n本次更新，没做什么别的，大概三件事：\n1、加入了记住学号密码功能，终于不用每次都输入了。\n2、加入了详细学分绩统计，在表格后。\n3、改善联网稳定性，长时间“联网”请检查网络，若有网但连不上则说明是教务系统在维护。\n\n还有就是Fix了一些使用上的小Bug，对了还换了新图标，感谢“吃掉南开”的设计大神。但主要就那三件事。\n\n很惭愧，做了一点微小的工作，谢谢大家！\n");
 			dialog.setCancelable(true);
 			dialog.setPositiveButton("吼啊", new DialogInterface.OnClickListener() {
 				@Override
@@ -156,8 +156,18 @@ public class MainActivity extends BaseActivity {
 			}
 
 		} );
+		Button bn_clearall = (Button) findViewById(R.id.button_clear);
 		Button bn_getScore=(Button)findViewById(R.id.button_getScore);
 		Button bn_evaluate=(Button)findViewById(R.id.button_evaluateTeacher);
+		bn_clearall.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				EdText_user.setText("");
+				EdText_password.setText("");
+				EdText_valicode.setText("");
+				EdText_user.requestFocus();
+			}
+		});
 		bn_getScore.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
