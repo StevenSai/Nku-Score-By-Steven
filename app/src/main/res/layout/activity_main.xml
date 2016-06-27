@@ -120,7 +120,31 @@
                     android:inputType="text" />
 
             </TableRow>
+
         </TableLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end">
+            <CheckBox
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/Cbox_rmbpass"
+                android:layout_gravity="center"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/rmbpass"
+                android:layout_gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="   "
+                android:layout_gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
+        </LinearLayout>
 
         <FrameLayout
             android:layout_width="match_parent"

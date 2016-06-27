@@ -168,7 +168,7 @@ public class WebLogger {
 		try {
 			//建立连接
 			HttpClient client = new DefaultHttpClient();
-			reportStatus("努力联网中...", 30);
+			reportStatus("努力联网中...\n长时间不动请检查网络，若手机网络正常则为教务处在维护，过会儿再来吧...", 30);
 			HttpGet get=new HttpGet("http://222.30.32.10/ValidateCode");
 			setHeaders(get,headers);
 			HttpResponse response=client.execute(get);

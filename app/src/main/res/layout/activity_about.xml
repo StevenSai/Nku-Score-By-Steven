@@ -15,7 +15,7 @@
         android:layout_height="100dp"
         android:layout_weight="0.2"
         android:layout_gravity="center"
-        android:src="@drawable/ic_launcherhhh"/>
+        android:src="@drawable/icon2"/>
 
     <FrameLayout
         android:layout_width="wrap_content"

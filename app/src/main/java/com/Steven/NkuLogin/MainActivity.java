@@ -4,10 +4,12 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -18,6 +20,7 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -31,8 +34,12 @@ public class MainActivity extends BaseActivity {
 	EditText EdText_password;
 	EditText EdText_valicode;
 	String PutPassWord;
+	String SetPassWord;
 	WebView webView1;
 	ProgressDialog prgDlg;
+	CheckBox remenberpass;
+	private SharedPreferences pref;
+	private SharedPreferences.Editor editor;
 	Handler handler=new Handler(){
 		@Override
 		public void handleMessage(Message msg){
@@ -55,6 +62,8 @@ public class MainActivity extends BaseActivity {
 				Toast toast=Toast.makeText(MainActivity.this,myLogger.toast_str, Toast.LENGTH_SHORT);
 				if(myLogger.toast_str.equals("用户不存在或密码错误！")){
 					EdText_password.setText("");
+					EdText_password.requestFocus();
+					//Toast.makeText(MainActivity.this,EdText_password.getText().toString(),Toast.LENGTH_SHORT);
 					EdText_valicode.setText("");
 				}
 				toast.show();
@@ -73,10 +82,12 @@ public class MainActivity extends BaseActivity {
 		EdText_password=(EditText)findViewById(R.id.editText_password);
 		EdText_valicode=(EditText)findViewById(R.id.editText_valicode);
 		webView1 = (WebView) findViewById(R.id.webView1);
+		remenberpass = (CheckBox) findViewById(R.id.Cbox_rmbpass);
 		WebSettings webSettings = webView1.getSettings();
 		webSettings.setJavaScriptEnabled(true);
 		webView1.addJavascriptInterface(new STJ(), "Steven");
 		webView1.loadUrl("file:///android_asset/StevenSecurity.html");
+		pref = PreferenceManager.getDefaultSharedPreferences(this);
 		prgDlg=new ProgressDialog(MainActivity.this);
 		myLogger=new WebLogger();
 		myLogger.myActivity=this;
@@ -91,6 +102,33 @@ public class MainActivity extends BaseActivity {
 				}
 			}
 		}.start();
+
+		boolean isrmb = pref.getBoolean("remenber_password",false);
+		boolean user_first = pref.getBoolean("first",true);
+		if (user_first){
+			pref.edit().putBoolean("first", false).apply();
+			AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+			dialog.setTitle("Excited!!!");
+			dialog.setMessage("\n本次更新，没做什么别的，大概三件事：\n1、加入了记住学号密码功能，终于不用每次都输入了。\n2、换了新图标，感谢“吃掉南开”的设计大神。\n3、改善联网稳定性，长时间“联网”请检查网络，若有网但连不上则说明是教务系统在维护。\n\n还有就是Fix了一些使用上的小Bug，但主要就那三件事。\n很惭愧，做了一点微小的工作，谢谢大家！\n");
+			dialog.setCancelable(true);
+			dialog.setPositiveButton("吼啊", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+
+				}
+			});
+			dialog.show();
+		}
+
+		if (isrmb){
+			String pass = pref.getString("password","");
+			String uname = pref.getString("username","");
+			EdText_password.setText(pass);
+			EdText_user.setText(uname);
+			EdText_valicode.requestFocus();
+			remenberpass.setChecked(true);
+			Toast.makeText(MainActivity.this,"已载入保存的学号密码",Toast.LENGTH_SHORT).show();
+		}
 
 		EdText_user.addTextChangedListener(new TextWatcher(){
 			@Override
@@ -122,31 +160,47 @@ public class MainActivity extends BaseActivity {
 		Button bn_evaluate=(Button)findViewById(R.id.button_evaluateTeacher);
 		bn_getScore.setOnClickListener(new OnClickListener(){
 			@Override
-			public void onClick(View v){
-				PutPassWord = EdText_password.getText().toString();
-				if(PutPassWord.length()<100) {
-					webView1.loadUrl("javascript:StevenSecurity('" + PutPassWord + "')");
-				}
-				new Thread(){
-					public void run(){
-						try{
-							sleep(500);
-							updateLoginInfos();
-							if(myLogger.getScore()){
-								Bundle data=new Bundle();
-								data.putCharSequence("res_page", myLogger.res_page);
-								Intent intent=new Intent(MainActivity.this, ShowScoreActivity.class);
-								intent.putExtras(data);
-								startActivity(intent);
+			public void onClick(View v) {
+				if (!EdText_password.getText().toString().equals("")) {
+					PutPassWord = EdText_password.getText().toString();
+					if (PutPassWord.length() < 100) {
+						SetPassWord = "";
+						webView1.loadUrl("javascript:StevenSecurity('" + PutPassWord + "')");
+					}
+					new Thread() {
+						public void run() {
+							try {
+								//sleep(700);
+								updateLoginInfos();
+								if (myLogger.getScore()) {
+									editor = pref.edit();
+									if (remenberpass.isChecked() && PutPassWord.length() < 100) {
+										editor.putString("username", EdText_user.getText().toString());
+										editor.putBoolean("remenber_password", true);
+										editor.putString("password", PutPassWord);
+									} else if (remenberpass.isChecked() && PutPassWord.length() >= 100) {
+										editor.putBoolean("remenber_password", true);
+									} else {
+										editor.putString("username", null);
+										editor.putBoolean("remenber_password", false);
+										editor.putString("password", null);
+									}
+									editor.apply();
+									Bundle data = new Bundle();
+									data.putCharSequence("res_page", myLogger.res_page);
+									Intent intent = new Intent(MainActivity.this, ShowScoreActivity.class);
+									intent.putExtras(data);
+									startActivity(intent);
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
 							}
 						}
-						catch(Exception e){
-							e.printStackTrace();
-						}
-					}
-				}.start();
+					}.start();
+				}else {
+					Toast.makeText(MainActivity.this,"请输入密码！",Toast.LENGTH_SHORT).show();
+				}
 			}
-
 		});
 
 
@@ -179,13 +233,19 @@ public class MainActivity extends BaseActivity {
 	private class STJ{
 		@JavascriptInterface
 		public void jsMethod(String mi){
-			EdText_password.setText(mi);
+			//EdText_password.setText(mi);
+			SetPassWord = mi;
 		}
 	}
 
 	public void updateLoginInfos() {
+		int i=0;
+		while(SetPassWord.equals("")){
+		    i++;
+	    }
 		myLogger.setUser(EdText_user.getText().toString());
-		myLogger.setPassword(EdText_password.getText().toString());
+		//myLogger.setPassword(EdText_password.getText().toString());
+		myLogger.setPassword(SetPassWord);
 		myLogger.setValicode(EdText_valicode.getText().toString());
 	}
 
