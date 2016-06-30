@@ -6,7 +6,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
@@ -25,6 +28,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.readystatesoftware.systembartint.SystemBarTintManager;
+
+import java.io.File;
+import java.io.IOException;
+
 public class MainActivity extends BaseActivity {
 
 	Bitmap valicodeBitmap;
@@ -38,6 +46,7 @@ public class MainActivity extends BaseActivity {
 	WebView webView1;
 	ProgressDialog prgDlg;
 	CheckBox remenberpass;
+	CreatFiles Scf;
 	private SharedPreferences pref;
 	private SharedPreferences.Editor editor;
 	Handler handler=new Handler(){
@@ -75,7 +84,16 @@ public class MainActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		//requestWindowFeature(Window.FEATURE_NO_TITLE);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+			getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+			//getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+		}
 		setContentView(R.layout.activity_main);
+		SystemBarTintManager tintManager = new SystemBarTintManager(this);
+		// enable status bar tint
+		tintManager.setStatusBarTintEnabled(true);
+		// enable navigation bar tint
+		tintManager.setTintColor(Color.parseColor("#4281C9"));
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		valicodeView=(ImageView)findViewById(R.id.imageView1);
 		EdText_user=(EditText)findViewById(R.id.editText_user);
@@ -83,6 +101,7 @@ public class MainActivity extends BaseActivity {
 		EdText_valicode=(EditText)findViewById(R.id.editText_valicode);
 		webView1 = (WebView) findViewById(R.id.webView1);
 		remenberpass = (CheckBox) findViewById(R.id.Cbox_rmbpass);
+		Scf = new CreatFiles();
 		WebSettings webSettings = webView1.getSettings();
 		webSettings.setJavaScriptEnabled(true);
 		webView1.addJavascriptInterface(new STJ(), "Steven");
@@ -108,8 +127,8 @@ public class MainActivity extends BaseActivity {
 		if (user_first){
 			pref.edit().putBoolean("first1", false).apply();
 			AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
-			dialog.setTitle("资瓷!!!");
-			dialog.setMessage("\n本次更新，没做什么别的，大概三件事：\n1、加入了记住学号密码功能，终于不用每次都输入了。\n2、加入了详细学分绩统计，在表格后。\n3、改善联网稳定性，长时间“联网”请检查网络，若有网但连不上则说明是教务系统在维护。\n\n还有就是Fix了一些使用上的小Bug，对了还换了新图标，感谢“吃掉南开”的设计大神。但主要就那三件事。\n\n很惭愧，做了一点微小的工作，谢谢大家！\n");
+			dialog.setTitle("资瓷不资瓷？ ");
+			dialog.setMessage("\n本次更新，没做什么别的，大概三件事：\n\n1、加入了记住学号密码功能，终于不用每次都输入了。\n\n2、加入了详细学分绩统计，在表格后。\n\n3、改善联网稳定性，长时间“联网”请检查网络，若有网但连不上则说明是教务系统在维护。\n\n还有就是Fix了一些使用上的小Bug，对了还换了新图标，感谢“吃掉南开”的设计大神。另外还优化了UI细节，这些都不是主要的，主要就那三件事。\n\n很惭愧，做了一点微小的工作，谢谢大家！\n\n");
 			dialog.setCancelable(true);
 			dialog.setPositiveButton("吼啊", new DialogInterface.OnClickListener() {
 				@Override
@@ -127,7 +146,7 @@ public class MainActivity extends BaseActivity {
 			EdText_user.setText(uname);
 			EdText_valicode.requestFocus();
 			remenberpass.setChecked(true);
-			Toast.makeText(MainActivity.this,"已载入保存的学号密码",Toast.LENGTH_SHORT).show();
+			Toast.makeText(MainActivity.this,"已载入保存的学号密码",Toast.LENGTH_LONG).show();
 		}
 
 		EdText_user.addTextChangedListener(new TextWatcher(){
@@ -162,10 +181,42 @@ public class MainActivity extends BaseActivity {
 		bn_clearall.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				EdText_user.setText("");
-				EdText_password.setText("");
-				EdText_valicode.setText("");
-				EdText_user.requestFocus();
+				AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+				dialog.setTitle("Sure?");
+				dialog.setMessage("\n清空所有输入吗？\n");
+				dialog.setCancelable(true);
+				dialog.setPositiveButton("只清空输入", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						EdText_user.setText("");
+						EdText_password.setText("");
+						EdText_valicode.setText("");
+						EdText_user.requestFocus();
+					}
+				});
+				dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+
+					}
+				});
+				dialog.setNeutralButton("删除保存", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						EdText_user.setText("");
+						EdText_password.setText("");
+						EdText_valicode.setText("");
+						EdText_user.requestFocus();
+						editor = pref.edit();
+						editor.putString("username", null);
+						editor.putBoolean("remenber_password", false);
+						editor.putString("password", null);
+						editor.apply();
+						remenberpass.setChecked(false);
+						Toast.makeText(MainActivity.this,"已删除保存的学号密码",Toast.LENGTH_LONG).show();
+					}
+				});
+				dialog.show();
 			}
 		});
 		bn_getScore.setOnClickListener(new OnClickListener(){
@@ -208,7 +259,7 @@ public class MainActivity extends BaseActivity {
 						}
 					}.start();
 				}else {
-					Toast.makeText(MainActivity.this,"请输入密码！",Toast.LENGTH_SHORT).show();
+					Toast.makeText(MainActivity.this,"请输入正确的用户名和密码！",Toast.LENGTH_SHORT).show();
 				}
 			}
 		});
@@ -234,8 +285,57 @@ public class MainActivity extends BaseActivity {
 					}
 				}.start();
 			}
-
 		});
+		FileHandler();
+		//Toast.makeText(MainActivity.this,Scf.getSdCardPath(),Toast.LENGTH_LONG).show();
+	}
+
+	public void FileHandler(){
+		try {
+			Scf.CreatPath();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	public class CreatFiles{
+
+		public boolean isSdCardExist() {
+			return Environment.getExternalStorageState().equals(
+					Environment.MEDIA_MOUNTED);
+		}
+
+		public String getSdCardPath() {
+			boolean exist = isSdCardExist();
+			String sdpath = "";
+			if (exist) {
+				sdpath = Environment.getExternalStorageDirectory()
+						.getAbsolutePath();
+			} else {
+				sdpath = "存储空间不适用";
+			}
+			return sdpath;
+		}
+
+		public void CreatPath() throws IOException{
+			File flie = new File (this.getSdCardPath()+"/我开查分");
+			if (!flie.exists()){
+				try{
+					flie.mkdirs();
+				}catch (Exception e){
+					//TODO: handle exception
+				}
+			}
+			File dir = new File(this.getSdCardPath()+"/我开查分"+"/成绩单.html");
+			if (!dir.exists()){
+				try{
+					dir.createNewFile();
+				}catch (Exception e){
+					//TODO: handle exception
+				}
+			}
+		}
 	}
 
 

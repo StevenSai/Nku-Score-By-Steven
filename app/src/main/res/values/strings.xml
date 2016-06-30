@@ -5,10 +5,10 @@
     <string name="action_settings">..</string>
     <string name="title_activity_show_score">喏，你要的成绩单 (●—●)</string>
     <string name="title_activity_about">App的故事</string>
-    <string name="abooout">特别感谢：初版作者 Alpha02\n初版源码：\nhttps://github.com/Alpha02/NKUEduSysLogin\n \n这个APP诞生很大原因是已无力吐槽学校选课查分系统（电脑登陆的正确方式为：用IE浏览器、将222.30.32.10加入兼容性视图后登陆）。2015年小学期时发现教务系统登录采用了新版验证码（包含字母了），遂发布V2.0版本修正。但经历2015愉快的暑假后，学校教务系统为了保证大家的密码安全采用了新版加密，V2.0也无法正常登陆查分了。之前的V2.3.3.3版本已经加入此加密系统，并进行了一些小细节的优化。查分功能应该没问题。V2.6.6.6版本加入了记住学号密码功能和详细学分绩统计，换了个Logo，改善联网！\n\n特此希望大家查分愉快，科科必过~~</string>
-    <string name="author">By Steven.\nHereSteven@126.com\n\n 2016.6.27</string>
+    <string name="abooout">特别感谢：初版作者 Alpha02\n初版源码：\nhttps://github.com/Alpha02/NKUEduSysLogin\n \n　　这个APP诞生很大原因是已无力吐槽学校选课查分系统（电脑登陆的正确方式为：用IE浏览器、将222.30.32.10加入兼容性视图后登陆）。2015年小学期时发现教务系统登录采用了新版验证码（包含字母了），遂发布V2.0版本修正。但经历2015愉快的暑假后，学校教务系统为了保证大家的密码安全采用了新版加密，V2.0也无法正常登陆查分了。\n\nV2.3.3.3版本已经加入此加密系统，并进行了一些小细节的优化。查分功能应该没问题。\n\nV2.6.6.6版本加入了记住学号密码功能和详细学分绩统计，换了个Logo，改善了联网！\n\nV2.6.7.8版本优化了界面显示，调整了UI细节。\n\n　　特此希望大家查分愉快，科科必过~~</string>
+    <string name="author">By Steven.\nHereSteven@126.com\n\n 2016.6.30</string>
     <string name="rmbpass">记住学号密码</string>
-    <string name="versionname">当前版本 V2.6.6.6</string>
+    <string name="versionname">当前版本 V2.6.7.8</string>
 
     <string name="title_activity_welecome">WelecomeActivity</string>
     <string name="dummy_button">Dummy Button</string>

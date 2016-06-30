@@ -287,7 +287,7 @@ public class WebLogger {
 			matcher=pattern.matcher(pageContent);
 			if(matcher.find()){
 				res_page+="<p align=\"center\">";
-				res_page=res_page+matcher.group(0)+"         ";
+				res_page=res_page+matcher.group(0)+"&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
 				//res_page+="</p>";
 			}
 			pattern=Pattern.compile("学号：\\d+");
@@ -470,12 +470,31 @@ public class WebLogger {
 		ABCDETOTAL += spe;
 		DecimalFormat df   = new DecimalFormat("######0.0000");
 		String back="<p></p><p align=\"center\" style=\"font-weight:bold\">学分统计</p>";
-		back+="<p align=\"center\">ABC类课：\t"+ABCTOTAL+"学分</p>";
-		back+="<p align=\"center\">ABC类课总学分绩：\t"+df.format(ABCGPAF)+"</p>";
-		back+="<p align=\"center\">ABCD类课：\t"+ABCDTOTAL+"学分</p>";
-		back+="<p align=\"center\">ABCD类课总学分绩：\t"+df.format(ABCDGPAF)+"</p>";
-		back+="<p align=\"center\">ABCDE类课：\t"+ABCDETOTAL+"学分</p>";
-		back+="<p align=\"center\">ABCDE类课总学分绩：\t"+df.format(ABCDEGPAF)+"</p>";
+		back+="<table bgcolor=\"#CCCCCC\" border=\"0\" width=\"100%\"> ";
+		back+="<tr bgcolor=\"#3366CC\">\n" +
+				"<td align=\"center\" class=\"NavText\">课程</td><td align=\"center\">总学分</td><td align=\"center\">学分绩</td>\n" +
+				"</tr>";
+		back+="<tr bgcolor=\"#FFFFFF\">\n" +
+				"\n" +
+				"<td align=\"center\" class=\"NavText\">ABC类课</td><td align=\"center\">"+ABCTOTAL+"</td><td align=\"center\">"+df.format(ABCGPAF)+"</td>\n" +
+				"\n" +
+				"</tr>";
+		back+="<tr bgcolor=\"#FFFFFF\">\n" +
+				"\n" +
+				"<td align=\"center\" class=\"NavText\">ABCD类课</td><td align=\"center\">"+ABCDTOTAL+"</td><td align=\"center\">"+df.format(ABCDGPAF)+"</td>\n" +
+				"\n" +
+				"</tr>";
+		back+="<tr bgcolor=\"#FFFFFF\">\n" +
+				"\n" +
+				"<td align=\"center\" class=\"NavText\">ABCDE类课</td><td align=\"center\">"+ABCDETOTAL+"</td><td align=\"center\">"+df.format(ABCDEGPAF)+"</td>\n" +
+				"\n" +
+				"</tr>"+"</table>";
+//		back+="<p align=\"center\">ABC类课：\t"+ABCTOTAL+"学分</p>";
+//		back+="<p align=\"center\">ABC类课总学分绩：\t"+df.format(ABCGPAF)+"</p>";
+//		back+="<p align=\"center\">ABCD类课：\t"+ABCDTOTAL+"学分</p>";
+//		back+="<p align=\"center\">ABCD类课总学分绩：\t"+df.format(ABCDGPAF)+"</p>";
+//		back+="<p align=\"center\">ABCDE类课：\t"+ABCDETOTAL+"学分</p>";
+//		back+="<p align=\"center\">ABCDE类课总学分绩：\t"+df.format(ABCDEGPAF)+"</p>";
 
 		return back;
 	}

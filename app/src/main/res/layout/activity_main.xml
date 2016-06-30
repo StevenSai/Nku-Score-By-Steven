@@ -9,12 +9,13 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.02" >
+         android:layout_weight="0.002">
     </FrameLayout>
 
     <LinearLayout
@@ -38,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|center_vertical"
-            android:layout_weight="2"
+            android:layout_weight="1"
             android:gravity="center"
             android:text="NKU 教务查分"
             android:textAppearance="?android:attr/textAppearanceLarge" />
@@ -49,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_weight="3" >
+            android:layout_weight="1" >
 
             <TableRow
                 android:id="@+id/tableRow1"
@@ -102,8 +103,7 @@
             <TableRow
                 android:id="@+id/tableRow3"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" >
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/textView_valicode"
@@ -114,31 +114,23 @@
 
                 <EditText
                     android:id="@+id/editText_valicode"
-                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_width="80dp"
                     android:inputType="text" />
-
+                <ImageView
+                    android:id="@+id/imageView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="30"/>
             </TableRow>
 
         </TableLayout>
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end">
-            <Button
-                android:id="@+id/button_clear"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minHeight="30dp"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="@string/clearall" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="      "
-                android:layout_gravity="center"
-                android:textAppearance="?android:attr/textAppearanceMedium"/>
+            android:layout_weight="0.5"
+            android:layout_gravity="center">
             <CheckBox
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
@@ -157,27 +149,16 @@
                 android:text="   "
                 android:layout_gravity="center"
                 android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+            <Button
+                android:id="@+id/button_clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="30dp"
+                android:layout_gravity="center"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/clearall" />
         </LinearLayout>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="2" >
-
-            <ImageView
-                android:id="@+id/imageView1"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_weight="0.31"
-                android:scaleType="fitCenter"
-                android:src="@drawable/icon2"
-                android:layout_gravity="center" />
-        </FrameLayout>
-
-        <FrameLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.7"/>
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -191,21 +172,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_gravity="center_horizontal"
-                android:minHeight="30dp"
+                android:layout_gravity="center"
+                android:minHeight="60dp"
                 android:text="点我查必过" />
 
             <Button
                 android:id="@+id/button_evaluateTeacher"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+                android:layout_gravity="center"
                 android:layout_weight="1"
-                android:minHeight="30dp"
+                android:minHeight="60dp"
                 android:text="点我来评教" />
-
-
-
         </LinearLayout>
     </LinearLayout>
 
