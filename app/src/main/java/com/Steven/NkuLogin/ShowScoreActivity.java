@@ -43,6 +43,7 @@ public class ShowScoreActivity extends BaseActivity {
 			bw.write(res_page);
 			bw.flush();
 			System.out.println("写入成功");
+			bw.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

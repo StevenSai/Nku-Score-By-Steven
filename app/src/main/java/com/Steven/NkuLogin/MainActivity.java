@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
@@ -30,7 +29,6 @@ import android.widget.Toast;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
-import java.io.File;
 import java.io.IOException;
 
 public class MainActivity extends BaseActivity {
@@ -286,55 +284,17 @@ public class MainActivity extends BaseActivity {
 				}.start();
 			}
 		});
+
 		FileHandler();
 		//Toast.makeText(MainActivity.this,Scf.getSdCardPath(),Toast.LENGTH_LONG).show();
 	}
+
 
 	public void FileHandler(){
 		try {
 			Scf.CreatPath();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-	}
-
-
-	public class CreatFiles{
-
-		public boolean isSdCardExist() {
-			return Environment.getExternalStorageState().equals(
-					Environment.MEDIA_MOUNTED);
-		}
-
-		public String getSdCardPath() {
-			boolean exist = isSdCardExist();
-			String sdpath = "";
-			if (exist) {
-				sdpath = Environment.getExternalStorageDirectory()
-						.getAbsolutePath();
-			} else {
-				sdpath = "存储空间不适用";
-			}
-			return sdpath;
-		}
-
-		public void CreatPath() throws IOException{
-			File flie = new File (this.getSdCardPath()+"/我开查分");
-			if (!flie.exists()){
-				try{
-					flie.mkdirs();
-				}catch (Exception e){
-					//TODO: handle exception
-				}
-			}
-			File dir = new File(this.getSdCardPath()+"/我开查分"+"/成绩单.html");
-			if (!dir.exists()){
-				try{
-					dir.createNewFile();
-				}catch (Exception e){
-					//TODO: handle exception
-				}
-			}
 		}
 	}
 
