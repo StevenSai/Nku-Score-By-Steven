@@ -19,11 +19,15 @@ public class ShowScoreActivity extends BaseActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Intent intent=getIntent();
+		String res_page=intent.getCharSequenceExtra("res_page").toString();
+		String studentName = intent.getStringExtra("student_name");
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
 			getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 			//getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
 		}
 		setContentView(R.layout.activity_show_score);
+		getActionBar().setTitle("喏，"+studentName+"童鞋的成绩单 ●—● ");
 		SystemBarTintManager tintManager = new SystemBarTintManager(this);
 		// enable status bar tint
 		tintManager.setStatusBarTintEnabled(true);
@@ -31,8 +35,8 @@ public class ShowScoreActivity extends BaseActivity {
 		tintManager.setTintColor(Color.parseColor("#212121"));
 
 		WebView tw=(WebView)findViewById(R.id.webView1);
-		Intent intent=getIntent();
-		String res_page=intent.getCharSequenceExtra("res_page").toString();
+
+
 		tw.loadDataWithBaseURL("about:blank", res_page, "text/html", "utf-8", "");
 		try {
 			File file = new File(Environment.getExternalStorageDirectory()

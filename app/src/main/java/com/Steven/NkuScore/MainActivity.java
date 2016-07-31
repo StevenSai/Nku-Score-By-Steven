@@ -66,14 +66,49 @@ public class MainActivity extends BaseActivity {
 				prgDlg.dismiss();
 			}
 			if(msg.what==0x126){
-				Toast toast=Toast.makeText(MainActivity.this,myLogger.toast_str, Toast.LENGTH_SHORT);
 				if(myLogger.toast_str.equals("用户不存在或密码错误！")){
+					myLogger.toast_str = "再检查下用户和密码，有错误哦！";
 					EdText_password.setText("");
 					EdText_password.requestFocus();
 					//Toast.makeText(MainActivity.this,EdText_password.getText().toString(),Toast.LENGTH_SHORT);
 					EdText_valicode.setText("");
+				}else if(myLogger.toast_str.equals("请输入正确的验证码！")){
+					myLogger.toast_str = "验证码输错啦→_→手别抖，别方。";
+					EdText_valicode.setText("");
+					EdText_valicode.requestFocus();
 				}
+				Toast toast=Toast.makeText(MainActivity.this,myLogger.toast_str, Toast.LENGTH_SHORT);
 				toast.show();
+			}
+			//处理网络连接不成功的情况
+			if(msg.what==0x127){
+				prgDlg.dismiss();
+				AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+				dialog.setTitle("网络连接超时！");
+				dialog.setMessage("检查下手机网络吧！\n如果手机网络木有问题，那就是教务系统在维护咯，过一阵子再来，不要方。");
+				dialog.setCancelable(false);
+				dialog.setPositiveButton("重连一下", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						new Thread(){
+							public void run(){
+								try{
+									myLogger.init();
+								}
+								catch(Exception e){
+									e.printStackTrace();
+								}
+							}
+						}.start();
+					}
+				});
+				dialog.setNegativeButton("退出", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						ActivityCollector.finishAll();
+					}
+				});
+				dialog.show();
 			}
 		}
 
@@ -220,44 +255,48 @@ public class MainActivity extends BaseActivity {
 		bn_getScore.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
-				if (!EdText_password.getText().toString().equals("")) {
-					PutPassWord = EdText_password.getText().toString();
-					if (PutPassWord.length() < 100) {
-						SetPassWord = "";
-						webView1.loadUrl("javascript:StevenSecurity('" + PutPassWord + "')");
-					}
-					new Thread() {
-						public void run() {
-							try {
-								//sleep(700);
-								updateLoginInfos();
-								if (myLogger.getScore()) {
-									editor = pref.edit();
-									if (remenberpass.isChecked() && PutPassWord.length() < 100) {
-										editor.putString("username", EdText_user.getText().toString());
-										editor.putBoolean("remenber_password", true);
-										editor.putString("password", PutPassWord);
-									} else if (remenberpass.isChecked() && PutPassWord.length() >= 100) {
-										editor.putBoolean("remenber_password", true);
-									} else {
-										editor.putString("username", null);
-										editor.putBoolean("remenber_password", false);
-										editor.putString("password", null);
-									}
-									editor.apply();
-									Bundle data = new Bundle();
-									data.putCharSequence("res_page", myLogger.res_page);
-									Intent intent = new Intent(MainActivity.this, ShowScoreActivity.class);
-									intent.putExtras(data);
-									startActivity(intent);
-								}
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
+				if (!EdText_valicode.getText().toString().equals("")) {
+					if (!EdText_password.getText().toString().equals("")) {
+						PutPassWord = EdText_password.getText().toString();
+						if (PutPassWord.length() < 100) {
+							SetPassWord = "";
+							webView1.loadUrl("javascript:StevenSecurity('" + PutPassWord + "')");
 						}
-					}.start();
+						new Thread() {
+							public void run() {
+								try {
+									updateLoginInfos();
+									if (myLogger.getScore()) {
+										editor = pref.edit();
+										if (remenberpass.isChecked() && PutPassWord.length() < 100) {
+											editor.putString("username", EdText_user.getText().toString());
+											editor.putBoolean("remenber_password", true);
+											editor.putString("password", PutPassWord);
+										} else if (remenberpass.isChecked() && PutPassWord.length() >= 100) {
+											editor.putBoolean("remenber_password", true);
+										} else {
+											editor.putString("username", null);
+											editor.putBoolean("remenber_password", false);
+											editor.putString("password", null);
+										}
+										editor.apply();
+										Bundle data = new Bundle();
+										data.putCharSequence("res_page", myLogger.res_page);
+										data.putString("student_name",myLogger.studentName);
+										Intent intent = new Intent(MainActivity.this, ShowScoreActivity.class);
+										intent.putExtras(data);
+										startActivity(intent);
+									}
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+							}
+						}.start();
+					} else {
+						Toast.makeText(MainActivity.this, "请输入正确的用户名和密码！", Toast.LENGTH_SHORT).show();
+					}
 				}else {
-					Toast.makeText(MainActivity.this,"请输入正确的用户名和密码！",Toast.LENGTH_SHORT).show();
+					Toast.makeText(MainActivity.this, "验证码还是要输入的...", Toast.LENGTH_SHORT).show();
 				}
 			}
 		});
