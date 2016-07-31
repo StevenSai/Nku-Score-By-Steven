@@ -1,4 +1,4 @@
-package com.Steven.NkuLogin;
+package com.Steven.NkuScore;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -28,6 +28,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -80,6 +82,7 @@ public class WebLogger {
 
 	Bitmap valicode_bitmap;
 	String res_page;
+	String studentName;
 	public int lenOfInfos(){
 		int res=0;
 		for(int i=1;i<6;i+=2){
@@ -170,10 +173,19 @@ public class WebLogger {
 		try {
 			//建立连接
 			HttpClient client = new DefaultHttpClient();
-			reportStatus("努力联网中...\n长时间不动请检查网络，若手机网络正常则为教务处在维护，过会儿再来吧...", 30);
+			reportStatus("努力联网中...", 30);
+			//启动计时，超时则弹出提示.
+			Timer timer = new Timer();
+			timer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					myActivity.handler.sendEmptyMessage(0x127);
+				}
+			},8000);
 			HttpGet get=new HttpGet("http://222.30.32.10/ValidateCode");
 			setHeaders(get,headers);
 			HttpResponse response=client.execute(get);
+			timer.cancel();
 			reportStatus("获取Cookie....", 30);
 			try{
 				String cookie=response.getLastHeader("Set-Cookie").getValue();
@@ -282,10 +294,11 @@ public class WebLogger {
 			reportStatus("创建HTML...", 40);
 			res_page="";
 			res_page+="<html>";
-			res_page+="<p align=\"center\" style=\"font-weight:bold\">修课得分详情</p>";
+			res_page+="<h2 align=\"center\" style=\"font-weight:bold\">修课得分详情</h2>";
 			pattern=Pattern.compile("姓名：\\w*");
 			matcher=pattern.matcher(pageContent);
 			if(matcher.find()){
+				studentName = matcher.group(0).substring(3);
 				res_page+="<p align=\"center\">";
 				res_page=res_page+matcher.group(0)+"&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp";
 				//res_page+="</p>";
@@ -297,8 +310,8 @@ public class WebLogger {
 				res_page+=matcher.group(0);
 				res_page+="</p>";
 			}
-			res_page+="<p align=\"center\">（P.S.表后加入了详细的学分绩统计）</p>";
-			res_page+="<p align=\"center\">（P.P.S.表后还有预警信息）</p>";
+			res_page+="<p align=\"center\"> --><a href=\"#GPA\">学分绩统计</a><--</p>";
+			res_page+="<p align=\"center\"> --><a href=\"#Warning\">预警信息</a><--</p>";
 			res_page+=GPA_count;
 			res_page+="<table bgcolor=\"#CCCCCC\" border=\"0\" cellspacing=\"2\" cellpadding=\"3\" width=\"100%\">";
 			res_page+="<tr bgcolor=\"#3366CC\"><td>序号</td><td>课程代码</td><td>课程名称</td><td>课程类型</td><td>成绩</td><td>学分</td><td>重修成绩</td><td>重修情况</td></tr>";
@@ -319,7 +332,7 @@ public class WebLogger {
 			//Log.i("stevenpage",res_page);
 			deleteValue(headers,"Referer");
 			res_page+="</table>";
-			res_page+=total()+"<br></br><p align=\"center\" style=\"font-weight:bold\">得分预警信息</p>";
+			res_page+=total()+"<a name=\"Warning\"></a> <br/><p align=\"center\" style=\"font-weight:bold\">得分预警信息</p>";
 			res_page+=GPA_alarm+"</html>";
 			reportStatus("正在将成绩单呈上来...", 100);
 			reportReady();
@@ -469,7 +482,7 @@ public class WebLogger {
 		}else ABCDEGPAF = 0;
 		ABCDETOTAL += spe;
 		DecimalFormat df   = new DecimalFormat("######0.0000");
-		String back="<p></p><p align=\"center\" style=\"font-weight:bold\">学分统计</p>";
+		String back="<p> <a name=\"GPA\"></a> </p> <br/> <p align=\"center\" style=\"font-weight:bold\">学分统计</p>";
 		back+="<table bgcolor=\"#CCCCCC\" border=\"0\" width=\"100%\"> ";
 		back+="<tr bgcolor=\"#3366CC\">\n" +
 				"<td align=\"center\" class=\"NavText\">课程</td><td align=\"center\">总学分</td><td align=\"center\">学分绩</td>\n" +
