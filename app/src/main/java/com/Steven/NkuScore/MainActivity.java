@@ -160,8 +160,8 @@ public class MainActivity extends BaseActivity {
 		if (user_first){
 			pref.edit().putBoolean("first1", false).apply();
 			AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
-			dialog.setTitle("资瓷不资瓷？ ");
-			dialog.setMessage("\n本次更新，没做什么别的，大概三件事：\n\n1、加入了记住学号密码功能，终于不用每次都输入了。\n\n2、加入了详细学分绩统计，在表格后。\n\n3、改善联网稳定性，长时间“联网”请检查网络，若有网但连不上则说明是教务系统在维护。\n\n还有就是Fix了一些使用上的小Bug，对了还换了新图标，感谢“吃掉南开”的设计大神。另外还优化了UI细节，这些都不是主要的，主要就那三件事。\n\n很惭愧，做了一点微小的工作，谢谢大家！\n\n");
+			dialog.setTitle("识得唔识得？");
+			dialog.setMessage("\n本次更新，没做什么别的，大概三件事：\n\n1、成绩单页面加入直达学分统计、预警的链接。\n\n2、提高联网稳定性，优化“连接超时”的反馈。\n\n3、一些动画的加入和优化。\n\n如果说还有什么那就是Fix了一些使用上的小Bug，优化了UI细节，这些都不是主要的，主要就那三件事。\n\n很惭愧，做了一点微小的工作，谢谢大家！\n\n");
 			dialog.setCancelable(true);
 			dialog.setPositiveButton("吼啊", new DialogInterface.OnClickListener() {
 				@Override
