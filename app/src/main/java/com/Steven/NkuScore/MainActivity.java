@@ -1,4 +1,4 @@
-package com.Steven.NkuLogin;
+package com.Steven.NkuScore;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;

@@ -1,4 +1,4 @@
-package com.Steven.NkuLogin;
+package com.Steven.NkuScore;
 
 import android.content.Intent;
 import android.os.Bundle;
