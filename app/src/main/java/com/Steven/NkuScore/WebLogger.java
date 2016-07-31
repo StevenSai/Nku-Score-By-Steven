@@ -266,6 +266,7 @@ public class WebLogger {
 			HttpGet get=new HttpGet("http://222.30.32.10/xsxk/scoreAlarmAction.do");
 			setHeaders(get,headers);
 			reportStatus("抱紧我莫慌...", 20);
+
 			String pageContent=readAll(client.execute(get).getEntity().getContent());
 			Pattern pattern=Pattern.compile("(<p align=\"center\">.*?</table>)");
 			Matcher matcher=pattern.matcher(pageContent);
@@ -273,8 +274,15 @@ public class WebLogger {
 			while(matcher.find()){
 				GPA_alarm+=matcher.group(0)+"\r\n<br></br>\r\n";
 			}
-
+			Timer timer = new Timer();
+			timer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					myActivity.handler.sendEmptyMessage(0x127);
+				}
+			},8000);
 			get=new HttpGet("http://222.30.32.10/xsxk/studiedAction.do");
+			timer.cancel();
 			setHeaders(get,headers);
 			pageContent=readAll(client.execute(get).getEntity().getContent());
 			pattern=Pattern.compile("共 (.) 页");
@@ -310,8 +318,8 @@ public class WebLogger {
 				res_page+=matcher.group(0);
 				res_page+="</p>";
 			}
-			res_page+="<p align=\"center\"> --><a href=\"#GPA\">学分绩统计</a><--</p>";
-			res_page+="<p align=\"center\"> --><a href=\"#Warning\">预警信息</a><--</p>";
+			res_page+="<p align=\"center\"> <a href=\"#GPA\">-->学分绩统计<--</a></p>";
+			res_page+="<p align=\"center\"> <a href=\"#Warning\">-->预警信息<--</a></p>";
 			res_page+=GPA_count;
 			res_page+="<table bgcolor=\"#CCCCCC\" border=\"0\" cellspacing=\"2\" cellpadding=\"3\" width=\"100%\">";
 			res_page+="<tr bgcolor=\"#3366CC\"><td>序号</td><td>课程代码</td><td>课程名称</td><td>课程类型</td><td>成绩</td><td>学分</td><td>重修成绩</td><td>重修情况</td></tr>";

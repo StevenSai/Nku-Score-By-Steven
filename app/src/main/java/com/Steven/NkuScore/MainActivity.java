@@ -85,7 +85,7 @@ public class MainActivity extends BaseActivity {
 				prgDlg.dismiss();
 				AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
 				dialog.setTitle("网络连接超时！");
-				dialog.setMessage("检查下手机网络吧！\n如果手机网络木有问题，那就是教务系统在维护咯，过一阵子再来，不要方。");
+				dialog.setMessage("检查下手机网络吧！\n\n如果手机网络木有问题，那就是教务系统在维护咯，过一阵子再来，不要方。");
 				dialog.setCancelable(false);
 				dialog.setPositiveButton("重连一下", new DialogInterface.OnClickListener() {
 					@Override
