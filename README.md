@@ -1,4 +1,4 @@
-# NKU_Login
+# Nku-Score
 特别感谢：初版作者 Alpha02
 
 初版源码：https://github.com/Alpha02/NKUEduSysLogin 
