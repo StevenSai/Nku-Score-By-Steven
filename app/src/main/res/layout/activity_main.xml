@@ -66,15 +66,16 @@
                     android:gravity="center"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/editText_user"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.10"
-                    android:inputType="text" >
+                    android:inputType="text"
+                    android:completionThreshold="2">
 
                     <requestFocus />
-                </EditText>
+                </AutoCompleteTextView>
             </TableRow>
 
             <TableRow
