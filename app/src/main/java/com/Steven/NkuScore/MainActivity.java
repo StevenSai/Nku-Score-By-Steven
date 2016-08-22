@@ -14,6 +14,7 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,6 +22,8 @@ import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -33,10 +36,12 @@ import java.io.IOException;
 
 public class MainActivity extends BaseActivity {
 
+
 	Bitmap valicodeBitmap;
 	ImageView valicodeView;
 	WebLogger myLogger;
-	EditText EdText_user;
+	AutoCompleteTextView EdText_user;
+	//EditText EdText_user;
 	EditText EdText_password;
 	EditText EdText_valicode;
 	String PutPassWord;
@@ -47,6 +52,7 @@ public class MainActivity extends BaseActivity {
 	CreatFiles Scf;
 	private SharedPreferences pref;
 	private SharedPreferences.Editor editor;
+	private int usersNum;
 	Handler handler=new Handler(){
 		@Override
 		public void handleMessage(Message msg){
@@ -110,6 +116,10 @@ public class MainActivity extends BaseActivity {
 				});
 				dialog.show();
 			}
+			//处理刷新输入学号的下拉记忆栏
+			if(msg.what==0x128){
+				refleshAdapter();
+			}
 		}
 
 	};
@@ -129,12 +139,16 @@ public class MainActivity extends BaseActivity {
 		tintManager.setTintColor(Color.parseColor("#4281C9"));
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		valicodeView=(ImageView)findViewById(R.id.imageView1);
-		EdText_user=(EditText)findViewById(R.id.editText_user);
+		EdText_user= (AutoCompleteTextView) findViewById(R.id.editText_user);
 		EdText_password=(EditText)findViewById(R.id.editText_password);
 		EdText_valicode=(EditText)findViewById(R.id.editText_valicode);
 		webView1 = (WebView) findViewById(R.id.webView1);
 		remenberpass = (CheckBox) findViewById(R.id.Cbox_rmbpass);
+
+		//创建相关文件、路径
 		Scf = new CreatFiles();
+		FileHandler();
+
 		WebSettings webSettings = webView1.getSettings();
 		webSettings.setJavaScriptEnabled(true);
 		webView1.addJavascriptInterface(new STJ(), "Steven");
@@ -157,11 +171,12 @@ public class MainActivity extends BaseActivity {
 
 		boolean isrmb = pref.getBoolean("remenber_password",false);
 		boolean user_first = pref.getBoolean("first1",true);
+		usersNum  = pref.getInt("userNum",0);
 		if (user_first){
 			pref.edit().putBoolean("first1", false).apply();
 			AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
 			dialog.setTitle("识得唔识得？");
-			dialog.setMessage("\n本次更新，没做什么别的，大概三件事：\n\n1、成绩单页面加入直达学分统计、预警的链接。\n\n2、提高联网稳定性，优化“连接超时”的反馈。\n\n3、一些动画的加入和优化。\n\n如果说还有什么那就是Fix了一些使用上的小Bug，优化了UI细节，这些都不是主要的，主要就那三件事。\n\n很惭愧，做了一点微小的工作，谢谢大家！\n\n");
+			dialog.setMessage("\n本次更新，没做什么别的，大概三件事：\n\n1、成绩单页面加入直达学分统计、预警的链接。\n\n2、提高联网稳定性，优化“连接超时”的反馈。\n\n3、一些动画的加入和优化。\n\n如果说还有什么那就是Fix了一些使用上的小Bug,增加了输入学号记忆,优化了UI细节,这些都不是主要的,主要就那三件事。\n\n很惭愧，做了一点微小的工作，谢谢大家！\n\n");
 			dialog.setCancelable(true);
 			dialog.setPositiveButton("吼啊", new DialogInterface.OnClickListener() {
 				@Override
@@ -182,6 +197,10 @@ public class MainActivity extends BaseActivity {
 			Toast.makeText(MainActivity.this,"已载入保存的学号密码",Toast.LENGTH_LONG).show();
 		}
 
+		if(usersNum!=0){
+			handler.sendEmptyMessage(0x128);
+		}
+
 		EdText_user.addTextChangedListener(new TextWatcher(){
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,int after) {
@@ -199,11 +218,23 @@ public class MainActivity extends BaseActivity {
 					myLogger.logined=false;
 					EdText_password.setText("");
 					EdText_valicode.setText("");
+					handler.sendEmptyMessage(0x128);
 					new Thread(){
 						public void run(){
 							myLogger.init();
 						}
 					}.start();
+				}
+				if (usersNum != 0){
+					for(int i=1;i<=usersNum;i++){
+						String name = pref.getString("user["+i+"]","");
+						if(name.equals(EdText_user.getText().toString())){
+							EdText_password.setText(pref.getString("pass["+i+"]",""));
+							break;
+						}else {
+							EdText_password.setText("");
+						}
+					}
 				}
 			}
 
@@ -244,7 +275,10 @@ public class MainActivity extends BaseActivity {
 						editor.putString("username", null);
 						editor.putBoolean("remenber_password", false);
 						editor.putString("password", null);
+						editor.putInt("userNum",0);
+						usersNum = 0;
 						editor.apply();
+						refleshAdapter();
 						remenberpass.setChecked(false);
 						Toast.makeText(MainActivity.this,"已删除保存的学号密码",Toast.LENGTH_LONG).show();
 					}
@@ -269,6 +303,18 @@ public class MainActivity extends BaseActivity {
 									if (myLogger.getScore()) {
 										editor = pref.edit();
 										if (remenberpass.isChecked() && PutPassWord.length() < 100) {
+											boolean flagEquals = false;
+											for(int i=1;i<=usersNum;i++){
+												if(EdText_user.getText().toString().equals(pref.getString("user["+usersNum+"]",""))){
+													flagEquals = true;
+												}
+											}
+											if (!flagEquals) {
+												usersNum++;
+												editor.putInt("userNum", usersNum);
+												editor.putString("user[" + usersNum + "]", EdText_user.getText().toString());
+												editor.putString("pass[" + usersNum + "]", PutPassWord);
+											}
 											editor.putString("username", EdText_user.getText().toString());
 											editor.putBoolean("remenber_password", true);
 											editor.putString("password", PutPassWord);
@@ -280,6 +326,9 @@ public class MainActivity extends BaseActivity {
 											editor.putString("password", null);
 										}
 										editor.apply();
+
+
+
 										Bundle data = new Bundle();
 										data.putCharSequence("res_page", myLogger.res_page);
 										data.putString("student_name",myLogger.studentName);
@@ -324,7 +373,7 @@ public class MainActivity extends BaseActivity {
 			}
 		});
 
-		FileHandler();
+
 		//Toast.makeText(MainActivity.this,Scf.getSdCardPath(),Toast.LENGTH_LONG).show();
 	}
 
@@ -345,6 +394,16 @@ public class MainActivity extends BaseActivity {
 			//EdText_password.setText(mi);
 			SetPassWord = mi;
 		}
+	}
+
+
+	public void refleshAdapter(){
+		String[] name = new String[usersNum];
+		for(int i=1;i<=usersNum;i++){
+			name[i-1] = pref.getString("user["+i+"]","");
+		}
+		ArrayAdapter<String> adapter = new ArrayAdapter<>(MainActivity.this,android.R.layout.simple_list_item_1,name);
+		EdText_user.setAdapter(adapter);
 	}
 
 	public void updateLoginInfos() {
