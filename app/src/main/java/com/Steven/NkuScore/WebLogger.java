@@ -61,19 +61,19 @@ public class WebLogger {
 			"Accept-Language","en-US",
 			"User-Agent","Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)",
 			"Accept-Encoding"," gzip, deflate",
-			"Host","222.30.32.10",
+			"Host","222.30.49.10",
 			"DNT","1",
 			"Connection","Keep-Alive"
 	));
 	List<String>headers2
 			=new ArrayList<String>(Arrays.asList(
 			"Accept","text/html, application/xhtml+xml, */*",
-			"Referer","http://222.30.32.10/",
+			"Referer","http://222.30.49.10/",
 			"Accept-Language","en-US",
 			"User-Agent","Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)",
 			"Content-Type","application/x-www-form-urlencoded",
 			"Accept-Encoding"," gzip, deflate",
-			"Host","222.30.32.10",
+			"Host","222.30.49.10",
 			//"Content-Length","97",
 			"DNT","1",
 			"Connection","Keep-Alive",
@@ -182,7 +182,7 @@ public class WebLogger {
 					myActivity.handler.sendEmptyMessage(0x127);
 				}
 			},8000);
-			HttpGet get=new HttpGet("http://222.30.32.10/ValidateCode");
+			HttpGet get=new HttpGet("http://222.30.49.10/ValidateCode");
 			setHeaders(get,headers);
 			HttpResponse response=client.execute(get);
 			timer.cancel();
@@ -217,7 +217,7 @@ public class WebLogger {
 		try {
 			reportStatus("正在登录...", 0);
 			HttpClient client = new DefaultHttpClient();
-			HttpPost post=new HttpPost("http://222.30.32.10/stdloginAction.do");
+			HttpPost post=new HttpPost("http://222.30.49.10/stdloginAction.do");
 			setContentLength(0);
 			setHeaders(post, headers2);
 			List<NameValuePair>loginPost
@@ -263,7 +263,7 @@ public class WebLogger {
 		res_page="";
 		try {
 			HttpClient client = new DefaultHttpClient();
-			HttpGet get=new HttpGet("http://222.30.32.10/xsxk/scoreAlarmAction.do");
+			HttpGet get=new HttpGet("http://222.30.49.10/xsxk/scoreAlarmAction.do");
 			setHeaders(get,headers);
 			reportStatus("抱紧我莫慌...", 20);
 
@@ -281,7 +281,7 @@ public class WebLogger {
 					myActivity.handler.sendEmptyMessage(0x127);
 				}
 			},8000);
-			get=new HttpGet("http://222.30.32.10/xsxk/studiedAction.do");
+			get=new HttpGet("http://222.30.49.10/xsxk/studiedAction.do");
 			timer.cancel();
 			setHeaders(get,headers);
 			pageContent=readAll(client.execute(get).getEntity().getContent());
@@ -324,7 +324,7 @@ public class WebLogger {
 			res_page+="<table bgcolor=\"#CCCCCC\" border=\"0\" cellspacing=\"2\" cellpadding=\"3\" width=\"100%\">";
 			res_page+="<tr bgcolor=\"#3366CC\"><td>序号</td><td>课程代码</td><td>课程名称</td><td>课程类型</td><td>成绩</td><td>学分</td><td>重修成绩</td><td>重修情况</td></tr>";
 			int page_index;
-			setValue(headers, "Referer", "http://222.30.32.10/xsxk/studiedAction.do");
+			setValue(headers, "Referer", "http://222.30.49.10/xsxk/studiedAction.do");
 			for (page_index=0;page_index<pages_number;page_index++){
 				reportStatus("良辰正在帮你读取第"+page_index+"页", 30);
 				pattern=Pattern.compile("(<tr bgcolor=\"#FFFFFF\">(( *\t\t.*?)+?) *\t</tr>)");
@@ -332,7 +332,7 @@ public class WebLogger {
 				while(matcher.find()){
 					res_page+=matcher.group(0);
 				}
-				get=new HttpGet("http://222.30.32.10/xsxk/studiedPageAction.do?page=next");
+				get=new HttpGet("http://222.30.49.10/xsxk/studiedPageAction.do?page=next");
 				setHeaders(get, headers);
 				//Log.d("zzz", pageContent);
 				pageContent=readAll(client.execute(get).getEntity().getContent());
@@ -533,7 +533,7 @@ public class WebLogger {
 		try {
 			reportStatus("获取课程数....", 15);
 			HttpClient client = new DefaultHttpClient();
-			HttpGet get=new HttpGet("http://222.30.32.10/evaluate/stdevatea/queryCourseAction.do");
+			HttpGet get=new HttpGet("http://222.30.49.10/evaluate/stdevatea/queryCourseAction.do");
 			setHeaders(get,headers);
 			String pageContent=readAll(client.execute(get).getEntity().getContent());
 			Pattern pattern=Pattern.compile("<td class=\"NavText\"><a href=\"queryTargetAction.do\\?operation=target&amp;index=(.)\">");
@@ -543,7 +543,7 @@ public class WebLogger {
 				course_number+=1;
 			}
 			reportStatus("你有"+course_number+"门课程,请耐心等待", 20);
-			String uri_str="http://222.30.32.10/evaluate/stdevatea/queryTargetAction.do?operation=target&index=";
+			String uri_str="http://222.30.49.10/evaluate/stdevatea/queryTargetAction.do?operation=target&index=";
 
 			get=new HttpGet(uri_str+0);
 			setHeaders(get,headers);
@@ -569,7 +569,7 @@ public class WebLogger {
 				setHeaders(get,headers);
 				HttpResponse response=client.execute(get);
 				setValue(headers2,"Referer",uri_str+idx);
-				HttpPost post=new HttpPost("http://222.30.32.10/evaluate/stdevatea/queryTargetAction.do");
+				HttpPost post=new HttpPost("http://222.30.49.10/evaluate/stdevatea/queryTargetAction.do");
 				setHeaders(post,headers2);
 				post.setEntity(urlentity);
 				response=client.execute(post);

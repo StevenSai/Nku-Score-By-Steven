@@ -14,7 +14,6 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -176,7 +175,7 @@ public class MainActivity extends BaseActivity {
 			pref.edit().putBoolean("first1", false).apply();
 			AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
 			dialog.setTitle("识得唔识得？");
-			dialog.setMessage("\n本次更新，没做什么别的，大概三件事：\n\n1、成绩单页面加入直达学分统计、预警的链接。\n\n2、提高联网稳定性，优化“连接超时”的反馈。\n\n3、一些动画的加入和优化。\n\n如果说还有什么那就是Fix了一些使用上的小Bug,增加了输入学号记忆,优化了UI细节,这些都不是主要的,主要就那三件事。\n\n很惭愧，做了一点微小的工作，谢谢大家！\n\n");
+			dialog.setMessage("\n本次更新，没做什么别的，大概三件事：\n\n1、成绩单页面加入直达学分统计、预警的链接。\n\n2、提高联网稳定性，优化“连接超时”的反馈。\n\n3、一些动画的加入和优化。\n\n如果说还有什么那就是Fix了一些使用上的小Bug,增加了输入学号记忆,优化了UI细节,适配了新的教务网址。这些都不是主要的,主要就那三件事。\n\n很惭愧，做了一点微小的工作，谢谢大家！\n\n");
 			dialog.setCancelable(true);
 			dialog.setPositiveButton("吼啊", new DialogInterface.OnClickListener() {
 				@Override
